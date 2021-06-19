@@ -3,7 +3,7 @@ const app = express()
 const axios = require('axios').default
 const cors = require('cors')
 const allRoutes = require('./allRoutes.json')
-const apiKey = 'AIzaSyDDNmcgJA29lyT1RP_mkXqJ9picWxpXbOM'
+const apiKey = 'AIzaSyDg4YM-PNfz1eEiJwO9IJLKP-AUwYHd-vI'
 app.use(cors())
 
 app.get('/geocode/:queryString', (req, res) => {

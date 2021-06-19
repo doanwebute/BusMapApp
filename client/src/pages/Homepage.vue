@@ -39,7 +39,7 @@
                     />
                     <p>{{ absoluteOrigin }}</p>
                 </div>
-                <div class="result-address">
+                <div class="result-address" style="margin-top: 0.5rem">
                     <img
                         src="../assets/location.svg"
                         width="27"
@@ -48,6 +48,9 @@
                     />
                     <p>{{ absoluteDestination }}</p>
                 </div>
+                <p class="route-not-found" v-if="hasNoRoute">
+                    Cannot found any route!
+                </p>
             </div>
             <div class="result-route" v-if="status === 'done'">
                 <div>
@@ -88,6 +91,26 @@
                     />
                     <p>About {{ bestRoute.legs[0].distance.text }}</p>
                 </div>
+                <h3 class="instruction-header">Details instruction:</h3>
+                <ul class="instruction-list">
+                    <li v-for="step in steps">
+                        <div v-if="step.mode === 'bus'">
+                            <img src="../assets/bus-3.svg" alt="" width="27" />
+                        </div>
+                        <div v-else>
+                            <img
+                                src="../assets/walking.svg"
+                                alt=""
+                                width="27"
+                            />
+                        </div>
+                        <p>
+                            {{ step.instruction }}
+                            <span>{{ step.distance }}</span> in about
+                            {{ step.duration }}
+                        </p>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -119,22 +142,30 @@ export default {
                 ...steps.filter((step) => step.travel_mode === 'TRANSIT'),
             ]
             console.log(transitSteps)
-            // console.log(transitSteps)
-            // let busesStep = []
-            // let busesNumberString = ''
-            // this.steps.map((step) => {
-            //     if (step.travel_mode === 'TRANSIT') {
-            //         busesStep.push(step)
-            //     }
-            // })
-            // busesStep.map((step) => {
-            //     busesNumberString += ` - ${step.transit_details.line.short_name}`
-            // })
-            // return busesNumberString
+            let busesNumberString = ''
+            transitSteps.map((step) => {
+                busesNumberString += ` - ${step.transit_details.line.short_name}`
+            })
+            return busesNumberString
+        },
+        steps() {
+            const steps = [
+                ...this.bestRoute.legs[0].steps.map((step) => {
+                    return {
+                        distance: step.distance.text,
+                        duration: step.duration.text,
+                        instruction: step.html_instructions,
+                        mode:
+                            step.travel_mode === 'TRANSIT' ? 'bus' : 'walking',
+                    }
+                }),
+            ]
+            return steps
         },
     },
     methods: {
         handleFindRoute() {
+            this.hasNoRoute = false
             if (this.origin.length < 2 || this.destination.length < 2) {
                 this.isValid = false
                 return
@@ -299,6 +330,29 @@ label {
                 margin-top: 0.25rem;
             }
         }
+    }
+}
+.route-not-found {
+    display: block;
+    margin-top: 0.75rem;
+    color: #ca4545;
+}
+.instruction-header {
+    margin-top: 0.5rem;
+    color: var(--secondary);
+    font-size: 1.1rem;
+    text-align: center;
+}
+.instruction-list {
+    margin-top: 1rem;
+    list-style: none;
+    li {
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+    p span {
+        color: var(--secondary);
     }
 }
 </style>
