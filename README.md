@@ -13,7 +13,7 @@ This is a minimal application that we can use for finding the best bus route aro
 -   After that, open terminal/powershell and type:
 
     ```sh
-    git clone https://github.com/nhhao/soen-busmap.git
+    git clone https://github.com/doanwebute/BusMapApp
     cd soen-busmap
     npm install -g nodemon # or 'yarn global add nodemon', if you're using yarn package management
     cd server && npm install # or just 'yarn' instead of 'npm install'
