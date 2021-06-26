@@ -3,7 +3,7 @@ const app = express()
 const axios = require('axios').default
 const cors = require('cors')
 const allRoutes = require('./allRoutes.json')
-const apiKey = 'AIzaSyDg4YM-PNfz1eEiJwO9IJLKP-AUwYHd-vI'
+const apiKey = ''
 app.use(cors())
 
 app.get('/geocode/:queryString', (req, res) => {
@@ -11,7 +11,10 @@ app.get('/geocode/:queryString', (req, res) => {
         .get(
             `https://maps.googleapis.com/maps/api/geocode/json?address=${req.params.queryString}&key=${apiKey}`
         )
-        .then((apiRes) => res.json(apiRes.data))
+        .then((apiRes) => {
+            res.json(apiRes.data)
+            console.log(apiRes)
+        })
         .catch((err) => console.log(err))
 })
 
@@ -20,7 +23,10 @@ app.get('/best-route/:origin/:destination', async (req, res) => {
         .get(
             `https://maps.googleapis.com/maps/api/directions/json?origin=${req.params.origin}&destination=${req.params.destination}&mode=transit&key=${apiKey}`
         )
-        .then((apiRes) => res.json(apiRes.data))
+        .then((apiRes) => {
+            res.json(apiRes.data)
+            console.log(apiRes)
+        })
         .catch((err) => console.log(err))
 })
 
