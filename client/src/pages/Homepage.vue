@@ -4,7 +4,19 @@
         <form @submit.prevent spellcheck="false">
             <label>
                 <p>Start location:</p>
-                <input type="text" v-model="origin" @input="isValid = true" />
+                <div class="gps-input">
+                    <input
+                        type="text"
+                        v-model="origin"
+                        @input="isValid = true"
+                    />
+                    <img
+                        src="../assets/gps.svg"
+                        alt=""
+                        class="gps-button"
+                        @click="getCurrentLocation"
+                    />
+                </div>
             </label>
             <label>
                 <p>Destination:</p>
@@ -89,7 +101,7 @@
                         width="24"
                         height="24"
                     />
-                    <p>About {{ bestRoute.legs[0].distance.text }}</p>
+                    <p>About {{ bestRoute.legs[0].duration.text }}</p>
                 </div>
                 <h3 class="instruction-header">Details instruction:</h3>
                 <ul class="instruction-list">
@@ -131,6 +143,7 @@ export default {
         absoluteOrigin: '',
         absoluteDestination: '',
         bestRoute: {},
+        currentLocation: '',
         isValid: true,
         hasNoRoute: false,
         status: 'waiting',
@@ -171,10 +184,18 @@ export default {
                 return
             }
             this.status = 'finding-geo'
+
             let originQueryString = this.origin.split(' ').join('+')
             let destinationQueryString = this.destination.split(' ').join('+')
+
             axios
-                .get(`http://localhost:3001/geocode/${originQueryString}`)
+                .get(
+                    `http://localhost:3001/geocode/${
+                        this.origin === 'Your location'
+                            ? this.currentLocation
+                            : originQueryString
+                    }`
+                )
                 .then((res) => {
                     this.absoluteOrigin = res.data.results[0].formatted_address
                     axios
@@ -209,6 +230,14 @@ export default {
                     this.status = 'done'
                 })
                 .catch((err) => console.log(err))
+        },
+        getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    this.currentLocation = `${position.coords.latitude},${position.coords.longitude}`
+                    this.origin = 'Your location'
+                })
+            }
         },
     },
 }
@@ -353,6 +382,19 @@ label {
     }
     p span {
         color: var(--secondary);
+    }
+}
+.gps-input {
+    display: flex;
+    align-items: center;
+}
+.gps-button {
+    display: inline-block;
+    margin-left: 0.5rem;
+    width: 24px;
+    cursor: pointer;
+    &:hover {
+        transform: scale(1.1);
     }
 }
 </style>
