@@ -1,0 +1,3 @@
+[submodule "soen-bus"]
+	path = soen-bus
+	url = git://github.com/doanwebute/BusMapApp.git
