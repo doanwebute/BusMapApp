@@ -4,7 +4,7 @@ This is a minimal application that we can use for finding the best bus route aro
 
 ### Screenshot
 
-![screenshot of busmap](./screenshots/screenshot.jpeg)
+![screenshot of busmap](./screenshots/result.jpeg)
 
 ## Fell free to use:
 
